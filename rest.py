@@ -13,7 +13,13 @@ def root():
 
 @app.route("/ipapi")
 def ipapi():
-    return render_template("ipapi.html/" + request.environ['REMOTE_ADDR'],ip=0,country=0,region=0,city=0,postal=0,latitude=0,longitude=0)
+    print "=========="
+    print request.environ['REMOTE_ADDR']
+    if(request.environ['REMOTE_ADDR'] == "127.0.0.1"):
+        info = json.loads(urllib2.urlopen("https://ipapi.co/json").read())
+    else:
+        info = json.loads(urllib2.urlopen("https://ipapi.co/" + request.environ['REMOTE_ADDR'] + "/json").read())
+    return render_template("ipapi.html/",ip=info['ip'],country=info['country'],region=info['region'],city=info['city'],postal=info['postal'],latitude=info['latitude'],longitude=info['longitude'])
 
 @app.route("/nasa")
 def nasa():
